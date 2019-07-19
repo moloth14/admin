@@ -1,12 +1,19 @@
 package admin.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
+/**
+ * data class for table "user": see README.md for its description
+ */
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "user", uniqueConstraints = {@UniqueConstraint(name = "uc_login", columnNames = "login")})
 public class User {
 
@@ -21,7 +28,7 @@ public class User {
     private String surname;
 
     @Column(name = "birth_date")
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Column(name = "login", nullable = false)
     private String login;
@@ -34,4 +41,15 @@ public class User {
 
     @Column(name = "address")
     private String address;
+
+    public void setFields(String name, String surname, LocalDate birthDate, String login, String password,
+                          String personalInfo, String address) {
+        this.name = name;
+        this.surname = surname;
+        this.birthDate = birthDate;
+        this.login = login;
+        this.password = password;
+        this.personalInfo = personalInfo;
+        this.address = address;
+    }
 }

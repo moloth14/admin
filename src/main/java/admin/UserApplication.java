@@ -4,6 +4,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import static org.springframework.boot.SpringApplication.run;
 
+/**
+ * @SpringBootApplication makes all work on configuration and component scan. Don't forget that it scans components only
+ * in its sub-packages - if it was moved, write another packages and classes for scanning.
+ */
 @SpringBootApplication
 public class UserApplication {
 
