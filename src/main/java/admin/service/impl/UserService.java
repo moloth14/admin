@@ -4,7 +4,7 @@ import admin.entity.User;
 import admin.exception.UserAlreadyExistsException;
 import admin.exception.UserNotFoundException;
 import admin.repository.UserRepository;
-import admin.service.UserService;
+import admin.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.List;
  * Implementation of service. Contains backend realization of methods.
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserService implements IUserService {
 
     @Autowired
     private UserRepository userRepository;

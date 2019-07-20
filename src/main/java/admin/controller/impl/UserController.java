@@ -1,7 +1,8 @@
-package admin.controller;
+package admin.controller.impl;
 
+import admin.controller.IUserController;
 import admin.entity.User;
-import admin.service.UserService;
+import admin.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,64 +10,49 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
+import static admin.controller.IUserController.USER_PATH;
 import static org.springframework.http.ResponseEntity.*;
 
 /**
  * Controller returning responses for basic CRUDL requests
  */
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping(USER_PATH)
+public class UserController implements IUserController {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
-    /**
-     * @param user      newly created user as request body parameter
-     * @param ucBuilder
-     * @return response with new user's location or CONFLICT status if user already exists
-     */
+    @Override
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder) {
         userService.createUser(user);
-        return created(ucBuilder.path("/api/users/{id}")
+        return created(ucBuilder.path(USER_PATH + USER_ID_PARAM)
                                .buildAndExpand(user.getId())
                                .toUri()).build();
     }
 
-    /**
-     * @return list of all users
-     */
+    @Override
     @GetMapping
     public ResponseEntity<List<User>> getUsers() {
         return ok(userService.getUsers());
     }
 
-    /**
-     * @param id user's id
-     * @return user found by id or NOT_FOUND status if user not exists
-     */
-    @GetMapping("/{id}")
+    @Override
+    @GetMapping(USER_ID_PARAM)
     public ResponseEntity<User> getUser(@PathVariable Long id) {
         return ok(userService.getUser(id));
     }
 
-    /**
-     * @param id   user's id
-     * @param user user object with new parameters
-     * @return NOT_FOUND status if user not exists, or nothing, correct update does not requires detailed response
-     */
-    @PutMapping("/{id}")
+    @Override
+    @PutMapping(USER_ID_PARAM)
     public ResponseEntity updateUser(@PathVariable Long id, @RequestBody User user) {
         userService.updateUser(id, user);
         return ok().build();
     }
 
-    /**
-     * @param id id of user to delete
-     * @return nothing or NOT_FOUND status if user not exists
-     */
-    @DeleteMapping("/{id}")
+    @Override
+    @DeleteMapping(USER_ID_PARAM)
     public ResponseEntity deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return noContent().build();

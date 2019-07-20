@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Service layer for requests
  */
-public interface UserService {
+public interface IUserService {
 
     void createUser(User user);
 

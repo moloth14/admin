@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
 /**
@@ -22,15 +23,18 @@ public class User {
     private Long id;
 
     @Column(name = "name", nullable = false)
+    @NotBlank
     private String name;
 
     @Column(name = "surname", nullable = false)
+    @NotBlank
     private String surname;
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
     @Column(name = "login", nullable = false)
+    @NotBlank
     private String login;
 
     @Column(name = "password")
