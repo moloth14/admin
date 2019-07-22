@@ -38,7 +38,7 @@ public class User {
     private String login;
 
     @Column(name = "password")
-    private String password;
+    private char[] password;
 
     @Column(name = "personal_info")
     private String personalInfo;
@@ -46,7 +46,7 @@ public class User {
     @Column(name = "address")
     private String address;
 
-    public void setFields(String name, String surname, LocalDate birthDate, String login, String password,
+    public void setFields(String name, String surname, LocalDate birthDate, String login, char[] password,
                           String personalInfo, String address) {
         this.name = name;
         this.surname = surname;

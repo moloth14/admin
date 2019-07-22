@@ -6,11 +6,14 @@ import admin.exception.UserNotFoundException;
 import admin.repository.UserRepository;
 import admin.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static java.nio.CharBuffer.wrap;
 
 /**
  * Implementation of service. Contains backend realization of methods.
@@ -21,12 +24,16 @@ public class UserService implements IUserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void createUser(User user) {
         Long id = user.getId();
         if (userRepository.findById(id)
                 .isPresent())
             throw new UserAlreadyExistsException(id);
+        encodePassword(user);
         userRepository.save(user);
     }
 
@@ -47,6 +54,7 @@ public class UserService implements IUserService {
         User userToUpdate = findUserById(id);
         userToUpdate.setFields(user.getName(), user.getSurname(), user.getBirthDate(), user.getLogin(),
                                user.getPassword(), user.getPersonalInfo(), user.getAddress());
+        encodePassword(userToUpdate);
         userRepository.save(userToUpdate);
     }
 
@@ -58,5 +66,10 @@ public class UserService implements IUserService {
     private User findUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    private void encodePassword(User user) {
+        user.setPassword(passwordEncoder.encode(wrap(user.getPassword()))
+                                 .toCharArray());
     }
 }

@@ -140,8 +140,8 @@ public class UserControllerTest {
     }
 
     private User createUser(int i) {
-        return new User(Long.valueOf(i), "name" + i, "surname" + i, of(2000, 1, i), "login" + i, "password" + i,
-                        "personalInfo" + i, "address" + i);
+        return new User(Long.valueOf(i), "name" + i, "surname" + i, of(2000, 1, i), "login" + i,
+                        ("password" + i).toCharArray(), "personalInfo" + i, "address" + i);
     }
 
     private void createUserTest(int i, User user) throws Exception {
@@ -160,7 +160,6 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.surname", m))
                 .andExpect(jsonPath("$.birthDate", m))
                 .andExpect(jsonPath("$.login", m))
-                .andExpect(jsonPath("$.password", m))
                 .andExpect(jsonPath("$.personalInfo", m))
                 .andExpect(jsonPath("$.address", m));
     }
