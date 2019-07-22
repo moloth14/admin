@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import static admin.controller.IUserController.USER_PATH;
-import static java.time.LocalDate.of;
+import static admin.utils.TestUtils.createUser;
+import static org.apache.logging.log4j.util.Strings.EMPTY;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -117,31 +118,26 @@ public class UserControllerTest {
 
         // test for non-nullable and not-blank fields
         User newUser = createUser(2);
-        newUser.setName("");
+        newUser.setName(EMPTY);
         updateUserTest(newUser);
         newUser.setName("user2");
-        newUser.setSurname("");
+        newUser.setSurname(EMPTY);
         updateUserTest(newUser);
         newUser.setSurname("surname2");
-        newUser.setLogin("");
+        newUser.setLogin(EMPTY);
         updateUserTest(newUser);
 
         // test for unique fields
         newUser.setLogin("login1");
         mockMvc.perform(post(USER_PATH).contentType(APPLICATION_JSON)
                                 .content(json(newUser)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
     }
 
     private String json(Object o) throws IOException {
         MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
         this.mappingJackson2HttpMessageConverter.write(o, APPLICATION_JSON, mockHttpOutputMessage);
         return mockHttpOutputMessage.getBodyAsString();
-    }
-
-    private User createUser(int i) {
-        return new User(Long.valueOf(i), "name" + i, "surname" + i, of(2000, 1, i), "login" + i,
-                        ("password" + i).toCharArray(), "personalInfo" + i, "address" + i);
     }
 
     private void createUserTest(int i, User user) throws Exception {

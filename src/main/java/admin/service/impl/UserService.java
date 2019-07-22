@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static java.nio.CharBuffer.wrap;
+import static org.apache.logging.log4j.util.Strings.EMPTY;
 
 /**
  * Implementation of service. Contains backend realization of methods.
@@ -30,10 +30,12 @@ public class UserService implements IUserService {
     @Override
     public void createUser(User user) {
         Long id = user.getId();
+        String login = user.getLogin();
         if (userRepository.findById(id)
+                .isPresent() || userRepository.findByLogin(login)
                 .isPresent())
-            throw new UserAlreadyExistsException(id);
-        encodePassword(user);
+            throw new UserAlreadyExistsException(id, login);
+        encodePassword(user, user.getPassword());
         userRepository.save(user);
     }
 
@@ -53,8 +55,8 @@ public class UserService implements IUserService {
     public void updateUser(Long id, User user) {
         User userToUpdate = findUserById(id);
         userToUpdate.setFields(user.getName(), user.getSurname(), user.getBirthDate(), user.getLogin(),
-                               user.getPassword(), user.getPersonalInfo(), user.getAddress());
-        encodePassword(userToUpdate);
+                               user.getPersonalInfo(), user.getAddress());
+        encodePassword(userToUpdate, user.getPassword());
         userRepository.save(userToUpdate);
     }
 
@@ -68,8 +70,11 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    private void encodePassword(User user) {
-        user.setPassword(passwordEncoder.encode(wrap(user.getPassword()))
-                                 .toCharArray());
+    // if password is null, set empty, if password is empty, leave previous or empty
+    private void encodePassword(User user, String password) {
+        if (password == null)
+            user.setPassword(EMPTY);
+        else if (!password.isEmpty())
+            user.setPassword(passwordEncoder.encode(password));
     }
 }

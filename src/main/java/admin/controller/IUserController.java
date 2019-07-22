@@ -17,7 +17,7 @@ public interface IUserController {
      * @param ucBuilder
      * @return response with new user's location or CONFLICT status if user already exists
      */
-    ResponseEntity<User> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder);
+    ResponseEntity<?> createUser(@RequestBody User user, UriComponentsBuilder ucBuilder);
 
     /**
      * @return list of all users
