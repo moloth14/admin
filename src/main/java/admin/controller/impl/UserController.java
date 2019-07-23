@@ -65,7 +65,7 @@ public class UserController implements IUserController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "User updated"),
             @ApiResponse(code = 400, message = "Incorrect request"),
             @ApiResponse(code = 404, message = "User not exists")})
-    public ResponseEntity updateUser(
+    public ResponseEntity<?> updateUser(
             @ApiParam(value = "User's id", required = true, example = "1") @PathVariable Long id,
             @ApiParam(value = "User's new params", required = true, example = "user") @Valid @RequestBody User user) {
         userService.updateUser(id, user);
@@ -77,7 +77,7 @@ public class UserController implements IUserController {
     @ApiOperation(value = "Delete an user")
     @ApiResponses(value = {@ApiResponse(code = 204, message = "User deleted"),
             @ApiResponse(code = 404, message = "User not exists")})
-    public ResponseEntity deleteUser(
+    public ResponseEntity<?> deleteUser(
             @ApiParam(value = "User's id", required = true, example = "1") @PathVariable Long id) {
         userService.deleteUser(id);
         return noContent().build();

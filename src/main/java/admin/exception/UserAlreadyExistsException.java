@@ -4,18 +4,18 @@ import static java.lang.String.format;
 
 public class UserAlreadyExistsException extends RuntimeException {
 
-    private static final String MESSAGE = "User with id %d or login %s already exists";
+    private String message;
 
-    private Long userId;
-    private String login;
+    public UserAlreadyExistsException(Long userId) {
+        message = format("User with id %d already exists", userId);
+    }
 
-    public UserAlreadyExistsException(Long userId, String login) {
-        this.userId = userId;
-        this.login = login;
+    public UserAlreadyExistsException(String login) {
+        message = format("User with login %s already exists", login);
     }
 
     @Override
     public String getMessage() {
-        return format(MESSAGE, userId, login);
+        return message;
     }
 }

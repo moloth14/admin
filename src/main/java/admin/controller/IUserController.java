@@ -35,11 +35,11 @@ public interface IUserController {
      * @param user user object with new parameters
      * @return NOT_FOUND status if user not exists, or nothing, correct update does not requires detailed response
      */
-    ResponseEntity updateUser(@PathVariable Long id, @RequestBody User user);
+    ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user);
 
     /**
      * @param id id of user to delete
      * @return nothing or NOT_FOUND status if user not exists
      */
-    ResponseEntity deleteUser(@PathVariable Long id);
+    ResponseEntity<?> deleteUser(@PathVariable Long id);
 }

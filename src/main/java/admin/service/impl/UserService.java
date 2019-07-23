@@ -29,12 +29,8 @@ public class UserService implements IUserService {
 
     @Override
     public void createUser(User user) {
-        Long id = user.getId();
-        String login = user.getLogin();
-        if (userRepository.findById(id)
-                .isPresent() || userRepository.findByLogin(login)
-                .isPresent())
-            throw new UserAlreadyExistsException(id, login);
+        checkIdUnique(user.getId());
+        checkLoginUnique(user.getLogin());
         encodePassword(user, user.getPassword());
         userRepository.save(user);
     }
@@ -52,12 +48,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void updateUser(Long id, User user) {
-        User userToUpdate = findUserById(id);
-        userToUpdate.setFields(user.getName(), user.getSurname(), user.getBirthDate(), user.getLogin(),
-                               user.getPersonalInfo(), user.getAddress());
-        encodePassword(userToUpdate, user.getPassword());
-        userRepository.save(userToUpdate);
+    public void updateUser(Long id, User newUser) {
+        User oldUser = findUserById(id);
+        String newLogin = newUser.getLogin();
+        // if login has not changed, we do not need check for its uniqueness
+        if (!oldUser.getLogin()
+                .equals(newLogin))
+            checkLoginUnique(newLogin);
+        oldUser.setFields(newUser.getName(), newUser.getSurname(), newUser.getBirthDate(), newLogin,
+                          newUser.getPersonalInfo(), newUser.getAddress());
+        encodePassword(oldUser, newUser.getPassword());
+        userRepository.save(oldUser);
     }
 
     @Override
@@ -68,6 +69,18 @@ public class UserService implements IUserService {
     private User findUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    private void checkIdUnique(Long id) {
+        if (id != null && userRepository.findById(id)
+                .isPresent())
+            throw new UserAlreadyExistsException(id);
+    }
+
+    private void checkLoginUnique(String login) {
+        if (userRepository.findByLogin(login)
+                .isPresent())
+            throw new UserAlreadyExistsException(login);
     }
 
     // if password is null, set empty, if password is empty, leave previous or empty

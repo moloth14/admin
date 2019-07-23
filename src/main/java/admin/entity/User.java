@@ -2,7 +2,6 @@ package admin.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +14,6 @@ import java.time.LocalDate;
  */
 @Data
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "user", uniqueConstraints = {@UniqueConstraint(name = "uc_login", columnNames = "login")})
 @ApiModel(description = "User's table structure.")
@@ -23,17 +21,17 @@ public class User {
 
     @Id
     @GeneratedValue
-    @ApiModelProperty(notes = "Generated user ID", required = true)
+    @ApiModelProperty(notes = "User's ID", example = "1")
     private Long id;
 
     @Column(name = "name", nullable = false)
     @NotBlank
-    @ApiModelProperty(notes = "User's name", required = true)
+    @ApiModelProperty(notes = "User's name", required = true, example = "John")
     private String name;
 
     @Column(name = "surname", nullable = false)
     @NotBlank
-    @ApiModelProperty(notes = "User's surname", required = true)
+    @ApiModelProperty(notes = "User's surname", required = true, example = "Snow")
     private String surname;
 
     @Column(name = "birth_date")
@@ -42,20 +40,26 @@ public class User {
 
     @Column(name = "login", nullable = false)
     @NotBlank
-    @ApiModelProperty(notes = "User's login", required = true)
+    @ApiModelProperty(notes = "User's login", required = true, example = "king")
     private String login;
 
     @Column(name = "password")
-    @ApiModelProperty(notes = "User's password")
+    @ApiModelProperty(notes = "User's password", example = "of_N0rth")
     private String password;
 
     @Column(name = "personal_info")
-    @ApiModelProperty(notes = "User's personal info")
+    @ApiModelProperty(notes = "User's personal info", example = "winter is coming")
     private String personalInfo;
 
     @Column(name = "address")
-    @ApiModelProperty(notes = "User's address")
+    @ApiModelProperty(notes = "User's address", example = "Wall")
     private String address;
+
+    public User(String name, String surname, LocalDate birthDate, String login, String password, String personalInfo,
+                String address) {
+        setFields(name, surname, birthDate, login, personalInfo, address);
+        this.password = password;
+    }
 
     public void setFields(String name, String surname, LocalDate birthDate, String login, String personalInfo,
                           String address) {
